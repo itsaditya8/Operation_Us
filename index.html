@@ -1,0 +1,699 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090b19">
+<title>The Little Universe — For Aditi</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --pink:#f1b2ca;
+  --gold:#eed6a2;
+  --cream:#fff6ed;
+  --muted:#c5c2d5;
+  --line:#ffffff26;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0;
+  min-height:100vh;
+  color:var(--cream);
+  background:#090b19;
+  font-family:"DM Sans",sans-serif;
+  overflow-x:hidden;
+}
+button { font:inherit; }
+button:focus-visible { outline:2px solid var(--gold); outline-offset:4px; }
+button:disabled { opacity:.35; cursor:not-allowed; }
+
+#stars {
+  position:fixed; inset:0; width:100%; height:100%;
+  z-index:0; pointer-events:none;
+}
+.glow {
+  position:fixed; width:70vw; height:60vw; max-height:600px;
+  border-radius:50%; filter:blur(90px); opacity:.22;
+  top:-30%; left:15%; background:#7565c5;
+  pointer-events:none; z-index:0;
+  animation:glowMove 13s ease-in-out infinite alternate;
+}
+.moon {
+  position:fixed; right:12%; top:13%; width:70px; height:70px;
+  border-radius:50%; background:#fff1d2;
+  box-shadow:0 0 45px #fff0d24d,0 0 100px #d7c7ff20;
+  pointer-events:none; z-index:0; transition:all 1s;
+}
+.moon:after {
+  content:""; position:absolute; left:17px; top:-7px;
+  width:65px; height:65px; border-radius:50%; background:#101127;
+}
+body[data-theme="pink"] .glow { background:#b44f89; }
+body[data-theme="pink"] .moon { box-shadow:0 0 70px #f1b2ca55; }
+body[data-theme="gold"] .glow { background:#b28c52; opacity:.15; }
+body[data-theme="blue"] .glow { background:#4d78d1; }
+@keyframes glowMove {
+  to { transform:translate(9%,12%) scale(1.18); }
+}
+
+.app { position:relative; z-index:1; min-height:100vh; }
+header {
+  width:min(1000px,90%); margin:auto; padding:23px 0;
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+}
+.brand { font-size:10px; letter-spacing:3px; color:#e4d9e9; }
+.sound {
+  background:#ffffff08; border:1px solid var(--line);
+  color:var(--cream); border-radius:30px; padding:9px 12px;
+  font-size:11px; cursor:pointer;
+}
+.progress-wrap { width:min(1000px,90%); margin:0 auto; }
+.progress-line { height:2px; background:#ffffff16; }
+.progress-line div {
+  height:100%; width:0; background:linear-gradient(90deg,var(--pink),var(--gold));
+  transition:width .6s;
+}
+.progress-label {
+  display:flex; justify-content:space-between; padding-top:8px;
+  font-size:9px; letter-spacing:2px; text-transform:uppercase; color:#aaa7bd;
+}
+main { width:min(900px,100%); margin:auto; padding:25px 20px 65px; }
+.scene { display:none; text-align:center; min-height:65vh; }
+.scene.active { display:block; animation:sceneIn .8s ease both; }
+@keyframes sceneIn {
+  from { opacity:0; transform:translateY(18px); filter:blur(4px); }
+  to { opacity:1; transform:translateY(0); filter:blur(0); }
+}
+.eyebrow {
+  color:var(--gold); font-size:10px; text-transform:uppercase;
+  letter-spacing:4px; margin:22px 0;
+}
+h1,h2,h3 {
+  font-family:"Playfair Display",Georgia,serif;
+  font-weight:500; line-height:1.18; letter-spacing:-.5px;
+  text-wrap:balance; margin:0;
+}
+h1 { font-size:clamp(43px,8vw,78px); }
+h2 { font-size:clamp(35px,6vw,57px); }
+h3 { font-size:25px; }
+em { color:var(--pink); }
+.lead {
+  max-width:520px; margin:20px auto 0; color:var(--muted);
+  font-size:15px; line-height:1.9;
+}
+.btn {
+  padding:13px 19px; min-height:46px; border-radius:4px;
+  border:1px solid var(--line); background:#ffffff09;
+  color:var(--cream); cursor:pointer; transition:.25s;
+}
+.btn:hover { transform:translateY(-3px); border-color:#f1b2ca99; background:#ffffff14; }
+.btn.primary {
+  color:#261723; border-color:transparent;
+  background:linear-gradient(120deg,#f6c7d9,#edd39a); font-weight:700;
+}
+.btn-row { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:28px; }
+.hint { color:#aaa6bd; font-size:11px; margin-top:20px; }
+.panel {
+  max-width:620px; margin:28px auto 0; padding:27px;
+  border:1px solid var(--line); border-radius:9px;
+  background:linear-gradient(135deg,#ffffff10,#ffffff04);
+  backdrop-filter:blur(16px); box-shadow:0 20px 70px #0002;
+}
+.panel p { color:#d5d1df; font-size:14px; line-height:1.9; }
+.panel p:first-child { margin-top:0; }
+.panel p:last-child { margin-bottom:0; }
+footer { padding:15px 10px 28px; text-align:center; color:#77758c; font-size:9px; letter-spacing:2px; }
+
+/* Opening */
+.hero-symbol {
+  width:160px; height:160px; border:1px solid #f1b2ca40;
+  border-radius:50%; display:grid; place-items:center; margin:10px auto 30px;
+  position:relative;
+}
+.hero-symbol:before,.hero-symbol:after {
+  content:""; position:absolute; inset:14px; border:1px solid #e6d8ff30;
+  border-radius:50%; animation:orbit 22s linear infinite;
+}
+.hero-symbol:after { inset:-7px 35px; border-color:#eed6a250; animation-direction:reverse; }
+.hero-star {
+  font-size:49px; color:#fff0d0;
+  text-shadow:0 0 30px #f1b2ca;
+  animation:twinkle 3s ease-in-out infinite;
+}
+@keyframes orbit { to { transform:rotate(360deg); } }
+@keyframes twinkle { 50% { transform:scale(1.15); opacity:.75; } }
+
+/* Swipe cards */
+.slider {
+  display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory;
+  padding:8px 3px 20px; scrollbar-width:none; touch-action:pan-x;
+}
+.slider::-webkit-scrollbar { display:none; }
+.story-card {
+  flex:0 0 min(78%,290px); min-height:285px; scroll-snap-align:center;
+  padding:23px; border:1px solid var(--line); border-radius:9px;
+  background:linear-gradient(150deg,#ffffff12,#ffffff04);
+  display:flex; flex-direction:column; align-items:flex-start; text-align:left;
+  position:relative; overflow:hidden; transition:border-color .3s,transform .3s;
+}
+.story-card:after {
+  content:""; position:absolute; width:150px; height:150px; border-radius:50%;
+  background:#b49af31b; filter:blur(25px); right:-70px; top:-70px;
+}
+.story-card:hover { border-color:#f1b2ca88; transform:translateY(-3px); }
+.card-no { font-size:10px; color:var(--gold); letter-spacing:3px; }
+.card-icon { font-size:32px; margin:27px 0 16px; }
+.story-card h3 { font-size:25px; position:relative; z-index:1; }
+.story-card p { font-size:13px; color:var(--muted); line-height:1.8; }
+.reveal-btn {
+  margin-top:auto; border:0; background:transparent; color:var(--pink);
+  padding:10px 0 0; cursor:pointer; text-align:left; font-size:12px;
+}
+.reveal-text { display:none; color:#fff0dc; font-size:13px; line-height:1.8; padding-top:10px; }
+.story-card.open .reveal-text { display:block; animation:sceneIn .5s both; }
+.story-card.open .reveal-btn { color:var(--gold); }
+.slider-controls { display:flex; justify-content:center; align-items:center; gap:14px; }
+.round-btn {
+  width:39px; height:39px; border-radius:50%; border:1px solid var(--line);
+  background:#ffffff08; color:var(--cream); cursor:pointer;
+}
+.dots { display:flex; gap:6px; }
+.dot { width:6px; height:6px; border-radius:50%; background:#ffffff35; }
+.dot.active { background:var(--pink); box-shadow:0 0 10px #f1b2ca; }
+
+/* Constellation */
+.constellation {
+  width:min(500px,100%); height:290px; margin:25px auto 10px;
+  position:relative; border:1px solid #ffffff12; border-radius:50%;
+  background:radial-gradient(ellipse,#6c5db01b,transparent 68%);
+}
+.constellation:before,.constellation:after {
+  content:""; position:absolute; border:1px solid #ffffff14; border-radius:50%;
+  inset:35px 12%; transform:rotate(-22deg);
+}
+.constellation:after { inset:65px 5%; transform:rotate(30deg); }
+.star-button {
+  position:absolute; z-index:2; width:48px; height:48px; border-radius:50%;
+  border:0; background:transparent; color:#fff1ce; font-size:26px; cursor:pointer;
+  text-shadow:0 0 18px #e8d1ff; animation:twinkle 2.7s ease-in-out infinite;
+}
+.star-button:after {
+  content:""; position:absolute; inset:7px; border:1px solid #f1b2ca40;
+  border-radius:50%; transition:.25s;
+}
+.star-button:hover:after,.star-button.found:after { inset:0; border-color:var(--pink); }
+.star-button.found { color:var(--pink); }
+.star-note {
+  min-height:75px; max-width:520px; margin:20px auto 0;
+  color:#ded9e8; font-family:"Playfair Display",serif; font-size:22px; line-height:1.6;
+}
+.found-count { font-size:10px; letter-spacing:2px; color:#aaa6bd; margin-top:14px; }
+
+/* Letter reveal */
+.envelope-area { margin:30px auto; perspective:900px; }
+.envelope {
+  position:relative; width:min(310px,85%); height:185px; margin:auto;
+  border:1px solid #e8c8d53d; background:#bd829e;
+  box-shadow:0 25px 70px #0004; cursor:pointer; overflow:visible;
+  transition:transform .5s;
+}
+.envelope:before {
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(135deg,#f6dce5,#dca8be);
+  clip-path:polygon(0 0,50% 60%,100% 0);
+  transform-origin:top; transition:transform .8s; z-index:3;
+}
+.envelope:after {
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(45deg,#c989a5,#f1c5d5);
+  clip-path:polygon(0 100%,0 0,50% 55%,100% 0,100% 100%);
+  z-index:2;
+}
+.envelope.open:before { transform:rotateX(180deg); }
+.seal {
+  position:absolute; z-index:4; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:43px; height:43px; display:grid; place-items:center; border-radius:50%;
+  background:#f2d6df; color:#a64d77; font-size:20px; transition:.4s;
+}
+.envelope.open .seal { opacity:0; }
+.letter {
+  display:none; text-align:left; color:#4d394a;
+  width:min(590px,100%); margin:25px auto 0; padding:28px;
+  background:linear-gradient(145deg,#fff8ee,#eddddf); border-radius:5px;
+  box-shadow:0 20px 60px #0003;
+}
+.letter.show { display:block; animation:letterIn 1s both; }
+@keyframes letterIn { from { opacity:0; transform:translateY(25px) scale(.97); } to { opacity:1; transform:none; } }
+.letter h3 { margin-bottom:15px; color:#7f4967; }
+.letter p { font-size:13px; line-height:1.95; }
+.letter .signature { font-family:"Playfair Display",serif; font-style:italic; color:#a44d79; font-size:23px; margin-top:20px; }
+
+/* Date selection */
+.date-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; max-width:570px; margin:28px auto 0; }
+.date-card {
+  border:1px solid var(--line); background:#ffffff08; color:var(--cream);
+  padding:18px; text-align:left; border-radius:7px; cursor:pointer; transition:.25s;
+}
+.date-card:hover,.date-card.selected {
+  border-color:#f1b2caad; background:#e5a0c21b; transform:translateY(-2px);
+}
+.date-card .emoji { font-size:24px; display:block; margin-bottom:12px; }
+.date-card strong { font-size:14px; }
+.date-card small { display:block; color:var(--muted); line-height:1.7; margin-top:7px; }
+.result-box { min-height:35px; margin:17px auto 0; color:var(--pink); font-size:13px; line-height:1.8; }
+.hidden { display:none!important; }
+
+@media(max-width:600px) {
+  header { padding:18px 0; }
+  .brand { font-size:8px; letter-spacing:2px; }
+  .moon { width:48px; height:48px; right:7%; top:12%; }
+  .moon:after { width:45px; height:45px; left:12px; top:-5px; }
+  main { padding:22px 17px 45px; }
+  .scene { min-height:66vh; }
+  .panel { padding:22px 18px; }
+  .story-card { flex-basis:83%; min-height:280px; }
+  .date-options { gap:8px; }
+  .date-card { padding:14px; }
+  .constellation { height:250px; }
+  .letter { padding:23px 19px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*:before,*:after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
+}
+</style>
+</head>
+
+<body data-theme="blue">
+<canvas id="stars"></canvas>
+<div class="glow"></div>
+<div class="moon"></div>
+
+<div class="app">
+<header>
+  <div class="brand">✦ THE LITTLE UNIVERSE · FOR ADITI</div>
+  <button class="sound" id="soundBtn">♫ Ambient: Off</button>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-line"><div id="progress"></div></div>
+  <div class="progress-label">
+    <span id="chapterLabel">The beginning</span>
+    <span id="chapterCount">01 / 06</span>
+  </div>
+</div>
+
+<main>
+  <!-- 1. Opening -->
+  <section class="scene active" data-theme="blue">
+    <div class="hero-symbol"><span class="hero-star">✧</span></div>
+    <div class="eyebrow">A tiny pause in your day</div>
+    <h1>Some things are<br>better <em>discovered.</em></h1>
+    <p class="lead">Aditi, I made you a little corner of the internet. Take your time. There are a few things hidden between the stars.</p>
+    <div class="btn-row">
+      <button class="btn primary" onclick="go(1)">Let's explore together ↗</button>
+    </div>
+    <p class="hint">BEST EXPERIENCED SLOWLY · WITH A LITTLE CURIOSITY</p>
+  </section>
+
+  <!-- 2. Sliding story cards -->
+  <section class="scene" data-theme="pink">
+    <div class="eyebrow">Chapter I · Little things</div>
+    <h2>Four little thoughts.<br><em>One is for you.</em></h2>
+    <p class="lead">Swipe through these cards. Open whichever one catches your eye.</p>
+
+    <div class="slider" id="storySlider">
+      <article class="story-card">
+        <span class="card-no">01 / THE LITTLE THINGS</span>
+        <div class="card-icon">☾</div>
+        <h3>Ordinary days</h3>
+        <p>Not every memorable moment needs a big occasion.</p>
+        <button class="reveal-btn" onclick="revealCard(this)">Unfold this thought +</button>
+        <div class="reveal-text">Sometimes, the smallest conversations become the ones we remember later.</div>
+      </article>
+      <article class="story-card">
+        <span class="card-no">02 / A REMINDER</span>
+        <div class="card-icon">✧</div>
+        <h3>Your own light</h3>
+        <p>You don't need to be anyone other than yourself.</p>
+        <button class="reveal-btn" onclick="revealCard(this)">Unfold this thought +</button>
+        <div class="reveal-text">The world is already full of people trying to fit in. Being genuinely yourself is its own kind of magic.</div>
+      </article>
+      <article class="story-card">
+        <span class="card-no">03 / A POSSIBILITY</span>
+        <div class="card-icon">∞</div>
+        <h3>Getting to know you</h3>
+        <p>There's something nice about a story with room to grow.</p>
+        <button class="reveal-btn" onclick="revealCard(this)">Unfold this thought +</button>
+        <div class="reveal-text">No rush to define anything. Just good conversations, a little laughter, and seeing where things go.</div>
+      </article>
+      <article class="story-card">
+        <span class="card-no">04 / THE HONEST PART</span>
+        <div class="card-icon">♡</div>
+        <h3>A little courage</h3>
+        <p>Sometimes, you just have to say what you mean.</p>
+        <button class="reveal-btn" onclick="revealCard(this)">Unfold this thought +</button>
+        <div class="reveal-text">So here's mine: I'd like to know you better, and I wanted to tell you in a way that feels a little special.</div>
+      </article>
+    </div>
+
+    <div class="slider-controls">
+      <button class="round-btn" onclick="slideCards(-1)" aria-label="Previous card">←</button>
+      <div class="dots" id="sliderDots">
+        <span class="dot active"></span><span class="dot"></span>
+        <span class="dot"></span><span class="dot"></span>
+      </div>
+      <button class="round-btn" onclick="slideCards(1)" aria-label="Next card">→</button>
+    </div>
+    <div class="btn-row"><button class="btn primary" onclick="go(2)">Find the hidden stars →</button></div>
+  </section>
+
+  <!-- 3. Tap constellation -->
+  <section class="scene" data-theme="blue">
+    <div class="eyebrow">Chapter II · A little universe</div>
+    <h2>Somewhere in here,<br>there are <em>four stars.</em></h2>
+    <p class="lead">Tap each glowing star to reveal a small message. No timer, no wrong answers.</p>
+
+    <div class="constellation" id="constellation">
+      <button class="star-button" style="left:14%;top:20%" data-note="Your smile can make an ordinary moment feel a little brighter." aria-label="Reveal star one">✦</button>
+      <button class="star-button" style="left:65%;top:14%" data-note="I appreciate the little things that make you uniquely you." aria-label="Reveal star two">✧</button>
+      <button class="star-button" style="left:42%;top:48%" data-note="A good conversation is a pretty lovely place to begin." aria-label="Reveal star three">✦</button>
+      <button class="star-button" style="left:76%;top:65%" data-note="You deserve kindness, respect, and the freedom to be yourself." aria-label="Reveal star four">✧</button>
+      <button class="star-button" style="left:20%;top:70%" data-note="This little universe exists for one simple reason: to make you smile." aria-label="Bonus star">✦</button>
+    </div>
+    <div class="star-note" id="starNote" aria-live="polite">Choose a star. See what it has to say.</div>
+    <div class="found-count" id="starCount">0 / 5 STARS DISCOVERED</div>
+    <div class="btn-row"><button class="btn primary" id="starNext" onclick="go(3)" disabled>Continue to the letter →</button></div>
+    <p class="hint">P.S. There's a bonus star too.</p>
+  </section>
+
+  <!-- 4. Letter -->
+  <section class="scene" data-theme="gold">
+    <div class="eyebrow">Chapter III · A note from me</div>
+    <h2>Some words are<br>better <em>unfolded.</em></h2>
+    <p class="lead">There's a letter here for you. Tap the envelope when you're ready.</p>
+
+    <div class="envelope-area">
+      <button class="envelope" id="envelope" aria-label="Open your letter">
+        <span class="seal">♡</span>
+      </button>
+    </div>
+    <p class="hint" id="envelopeHint">TAP TO OPEN YOUR LETTER</p>
+
+    <article class="letter" id="letter">
+      <h3>Hey Aditi,</h3>
+      <p>I wanted to make you something a little different. Not just another message that disappears into a chat, but a small moment you could keep for a minute.</p>
+      <p>I think getting to know someone should happen naturally. The nicest memories often begin with something simple: an unexpected conversation, a shared laugh, or finding out that you enjoy the same little things.</p>
+      <p>So here's me being honest. I'd genuinely like to spend more time with you, talk a little more, and get to know you better. No grand promises, no pressure to feel a certain way.</p>
+      <p>You don't owe me a particular answer. I just wanted you to know that the thought of spending time with you makes me smile.</p>
+      <div class="signature">Made with care, just for you. ✦</div>
+    </article>
+    <div class="btn-row"><button class="btn primary" id="letterNext" onclick="go(4)" disabled>There's one last thing →</button></div>
+  </section>
+
+  <!-- 5. Date picker -->
+  <section class="scene" data-theme="pink">
+    <div class="eyebrow">Chapter IV · A tiny invitation</div>
+    <h2>What if we made<br>a <em>little memory?</em></h2>
+    <p class="lead">If you'd like to, pick the kind of time together that sounds nicest to you.</p>
+
+    <div class="date-options" id="dateOptions">
+      <button class="date-card selected" data-date="Coffee">
+        <span class="emoji">☕</span><strong>A coffee date</strong>
+        <small>A cosy place, easy conversation, no rush.</small>
+      </button>
+      <button class="date-card" data-date="A walk">
+        <span class="emoji">☾</span><strong>An evening walk</strong>
+        <small>Fresh air and a little time away from screens.</small>
+      </button>
+      <button class="date-card" data-date="Something to eat">
+        <span class="emoji">🍰</span><strong>Something to eat</strong>
+        <small>Good food and a relaxed conversation.</small>
+      </button>
+      <button class="date-card" data-date="Your idea">
+        <span class="emoji">✧</span><strong>Your idea</strong>
+        <small>You choose what would make you comfortable.</small>
+      </button>
+    </div>
+    <div class="result-box" id="dateFeedback" aria-live="polite">Selected: Coffee ☕</div>
+    <div class="btn-row"><button class="btn primary" onclick="go(5)">One final page →</button></div>
+    <p class="hint">It's an invitation, not an expectation. Your choice matters.</p>
+  </section>
+
+  <!-- 6. Ending -->
+  <section class="scene" data-theme="pink">
+    <div class="hero-symbol"><span class="hero-star">♡</span></div>
+    <div class="eyebrow">The final chapter · Your choice</div>
+    <h2>So, Aditi...<br><em>what do you think?</em></h2>
+    <p class="lead">Would you like to spend some time together sometime? Whatever your answer, thank you for exploring this little world.</p>
+
+    <div class="panel">
+      <h3 id="endingTitle">A simple question, asked sincerely.</h3>
+      <p id="endingMessage">I'd love to spend time with you. We can figure out the details together, whenever you're comfortable.</p>
+      <p id="endingPlan">Your idea so far: Coffee ☕</p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn primary" onclick="respond('yes')">I'd like that ♡</button>
+      <button class="btn" onclick="respond('maybe')">Let's talk first</button>
+      <button class="btn" onclick="respond('no')">Not this time</button>
+    </div>
+    <div class="result-box" id="finalFeedback" aria-live="polite"></div>
+    <div class="btn-row"><button class="btn" onclick="restart()">↺ Revisit our little universe</button></div>
+  </section>
+</main>
+<footer>A SMALL MOMENT IN A BIG WORLD · MADE WITH CARE</footer>
+</div>
+
+<script>
+const scenes = [...document.querySelectorAll(".scene")];
+const progress = document.getElementById("progress");
+const chapterLabel = document.getElementById("chapterLabel");
+const chapterCount = document.getElementById("chapterCount");
+
+const chapterNames = [
+  "The beginning",
+  "Little things",
+  "A little universe",
+  "A note from me",
+  "A tiny invitation",
+  "Your choice"
+];
+let current = 0;
+
+function go(index) {
+  if (index < 0 || index >= scenes.length) return;
+  scenes[current].classList.remove("active");
+  current = index;
+  document.body.dataset.theme = scenes[current].dataset.theme;
+
+  // Restart the transition whenever a chapter is opened.
+  void scenes[current].offsetWidth;
+  scenes[current].classList.add("active");
+
+  progress.style.width = ((current + 1) / scenes.length * 100) + "%";
+  chapterLabel.textContent = chapterNames[current];
+  chapterCount.textContent = String(current + 1).padStart(2,"0") +
+    " / " + String(scenes.length).padStart(2,"0");
+
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function restart() {
+  document.querySelectorAll(".story-card").forEach(c => c.classList.remove("open"));
+  document.querySelectorAll(".star-button").forEach(s => s.classList.remove("found"));
+  document.getElementById("starNote").textContent = "Choose a star. See what it has to say.";
+  document.getElementById("starCount").textContent = "0 / 5 STARS DISCOVERED";
+  document.getElementById("starNext").disabled = true;
+  document.getElementById("envelope").classList.remove("open");
+  document.getElementById("letter").classList.remove("show");
+  document.getElementById("letterNext").disabled = true;
+  document.getElementById("envelopeHint").textContent = "TAP TO OPEN YOUR LETTER";
+  document.querySelectorAll(".date-card").forEach((c,i) => c.classList.toggle("selected", i === 0));
+  selectedDate = "Coffee";
+  document.getElementById("dateFeedback").textContent = "Selected: Coffee ☕";
+  document.getElementById("finalFeedback").textContent = "";
+  go(0);
+}
+
+// Sliding story cards.
+const slider = document.getElementById("storySlider");
+const dots = [...document.querySelectorAll("#sliderDots .dot")];
+
+function slideCards(direction) {
+  const card = slider.querySelector(".story-card");
+  if (!card) return;
+  slider.scrollBy({left: direction * (card.getBoundingClientRect().width + 14), behavior:"smooth"});
+}
+
+slider.addEventListener("scroll", () => {
+  const card = slider.querySelector(".story-card");
+  if (!card) return;
+  const index = Math.round(slider.scrollLeft / (card.getBoundingClientRect().width + 14));
+  dots.forEach((d,i) => d.classList.toggle("active", i === index));
+});
+
+function revealCard(button) {
+  const card = button.closest(".story-card");
+  card.classList.toggle("open");
+  button.textContent = card.classList.contains("open")
+    ? "Fold this thought −" : "Unfold this thought +";
+}
+
+// Interactive stars: five discoveries unlock the next chapter.
+const stars = [...document.querySelectorAll(".star-button")];
+let foundStars = new Set();
+
+stars.forEach((star,index) => {
+  star.addEventListener("click", () => {
+    if (foundStars.has(index)) {
+      document.getElementById("starNote").textContent = star.dataset.note;
+      return;
+    }
+    foundStars.add(index);
+    star.classList.add("found");
+    document.getElementById("starNote").textContent = star.dataset.note;
+    document.getElementById("starCount").textContent =
+      foundStars.size + " / " + stars.length + " STARS DISCOVERED";
+
+    if (foundStars.size === stars.length) {
+      document.getElementById("starNote").textContent =
+        "You found every star. Here's to the little things that make life brighter. ✦";
+      document.getElementById("starNext").disabled = false;
+    }
+  });
+});
+
+// Envelope opens the letter.
+document.getElementById("envelope").addEventListener("click", () => {
+  const envelope = document.getElementById("envelope");
+  const letter = document.getElementById("letter");
+  envelope.classList.add("open");
+  letter.classList.add("show");
+  document.getElementById("envelopeHint").textContent = "A NOTE, JUST FOR YOU";
+  document.getElementById("letterNext").disabled = false;
+});
+
+// Choose an outing idea.
+let selectedDate = "Coffee";
+const dateEmojis = {
+  "Coffee":"☕", "A walk":"☾",
+  "Something to eat":"🍰", "Your idea":"✧"
+};
+document.querySelectorAll(".date-card").forEach(card => {
+  card.addEventListener("click", () => {
+    document.querySelectorAll(".date-card").forEach(c => c.classList.remove("selected"));
+    card.classList.add("selected");
+    selectedDate = card.dataset.date;
+    document.getElementById("dateFeedback").textContent =
+      "Selected: " + selectedDate + " " + dateEmojis[selectedDate];
+    document.getElementById("endingPlan").textContent =
+      "Your idea so far: " + selectedDate + " " + dateEmojis[selectedDate];
+  });
+});
+
+// The ending changes according to her answer.
+function respond(answer) {
+  const title = document.getElementById("endingTitle");
+  const message = document.getElementById("endingMessage");
+  const feedback = document.getElementById("finalFeedback");
+
+  if (answer === "yes") {
+    title.textContent = "Then let's make a little memory. ♡";
+    message.textContent = "That makes me smile. We can plan " + selectedDate +
+      " together and pick a time that works for both of us.";
+    feedback.textContent = "A little possibility, a little excitement. ✦";
+  } else if (answer === "maybe") {
+    title.textContent = "No rush. Let's talk first.";
+    message.textContent = "I'd be happy to chat more and let things happen naturally. " +
+      "There's no deadline on getting to know someone.";
+    feedback.textContent = "Taking your time is absolutely okay.";
+  } else {
+    title.textContent = "Thank you for being honest.";
+    message.textContent = "That's completely okay. Your comfort and choice matter. " +
+      "I hope this little surprise still made you smile.";
+    feedback.textContent = "No pressure, no awkwardness. Take care, Aditi. ✦";
+  }
+}
+
+// Starfield with different particle moods.
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+let particles = [], w = 0, h = 0, previousTime = 0;
+
+function random(min,max) { return Math.random() * (max-min) + min; }
+
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  w = window.innerWidth; h = window.innerHeight;
+  canvas.width = w*dpr; canvas.height = h*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  particles = Array.from({length:Math.min(125,Math.floor(w*h/8000))}, () => ({
+    x:random(0,w), y:random(0,h), r:random(.5,1.8),
+    speed:random(.06,.32), drift:random(-.2,.2), phase:random(0,6.28)
+  }));
+}
+
+function animate(time) {
+  const dt = Math.min(time-(previousTime || time),40)/16;
+  previousTime = time;
+  ctx.clearRect(0,0,w,h);
+  const theme = document.body.dataset.theme;
+
+  particles.forEach(p => {
+    p.y += p.speed*dt;
+    p.x += p.drift*dt;
+    if(p.y > h+4) {p.y=-4;p.x=random(0,w);}
+    if(p.x > w+4) p.x=-4;
+    if(p.x < -4) p.x=w+4;
+
+    ctx.globalAlpha=.25 + (Math.sin(time*.001+p.phase)+1)*.28;
+    ctx.fillStyle=theme === "gold" ? "#f3d9a6" :
+      theme === "pink" ? "#f3bfd9" : "#e8e4ff";
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+  });
+  ctx.globalAlpha=1;
+  requestAnimationFrame(animate);
+}
+window.addEventListener("resize",resize);
+resize();
+requestAnimationFrame(animate);
+
+// Optional gentle ambient tone; only starts on an explicit click.
+let audioContext, oscillator, gain, soundOn = false;
+document.getElementById("soundBtn").addEventListener("click", async () => {
+  const btn = document.getElementById("soundBtn");
+  try {
+    if (!soundOn) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) { btn.textContent="Audio unavailable"; return; }
+      audioContext = audioContext || new AudioContextClass();
+      await audioContext.resume();
+      oscillator = audioContext.createOscillator();
+      gain = audioContext.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = 174;
+      gain.gain.value = .012;
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+      oscillator.start();
+      soundOn = true;
+      btn.textContent = "♫ Ambient: On";
+    } else {
+      oscillator.stop();
+      oscillator.disconnect();
+      oscillator = null;
+      soundOn = false;
+      btn.textContent = "♫ Ambient: Off";
+    }
+  } catch (e) {
+    btn.textContent = "Audio unavailable";
+  }
+});
+</script>
+</body>
+</html>
